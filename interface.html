@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIESEC Medina Hosting Exchange Program</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Alpine JS for interactivity -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Phosphor Icons for elegant minimalist icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 50)">
+
+    <!-- Navigation -->
+    <nav class="navbar" :class="{ 'scrolled': scrolled }">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="media logo 1.png" alt="Medina Host Logo" style="height: 48px; width: auto; transition: transform 0.3s ease;">
+            </div>
+            <div class="nav-links">
+                <a href="#moments">Moments</a>
+                <a href="#matchmaker">Find a Host</a>
+                <a href="#become-host">Open Your Home</a>
+                <button class="btn-primary">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="radial-gradient"></div>
+        <div class="hero-content">
+            <div class="badge fade-in-up" style="animation-delay: 0.1s;">
+                <i class="ph-fill ph-globe-hemisphere-east"></i> Global Connections, Local Hearts
+            </div>
+            <h1 class="hero-title fade-in-up" style="animation-delay: 0.3s;">
+                More than a stay.<br>
+                A <span class="gradient-text">cultural exchange</span>.
+            </h1>
+            <p class="hero-subtitle fade-in-up" style="animation-delay: 0.5s;">
+                Connect deeply with international students and passionate locals. Share meals, stories, and the magic of your culture.
+            </p>
+            <div class="hero-actions fade-in-up" style="animation-delay: 0.7s;">
+                <a href="#matchmaker" class="btn-primary btn-large">
+                    Meet Our Hosts <i class="ph-bold ph-arrow-right"></i>
+                </a>
+                <a href="#moments" class="btn-outline btn-large">
+                    Heartfelt Stories
+                </a>
+            </div>
+        </div>
+        <div class="hero-image-wrapper fade-in-up" style="animation-delay: 0.9s;">
+            <!-- Subtle interactive floating elements -->
+            <div class="floating-card c1">"Beautiful cultural exchange!" 🌍</div>
+            <div class="floating-card c2">"Made lifelong friends!" 🤝</div>
+            <img src="user_hero.jpg" alt="Connecting people" class="hero-main-img" onerror="this.src='user_souk.jpg'">
+        </div>
+    </header>
+
+    <!-- Heartfelt Moments Section -->
+    <section id="moments" class="section moments-section">
+        <div class="section-header">
+            <h2 class="section-title">Moments of Bonding</h2>
+            <p class="section-desc">Real stories of shared cultures, laughter, and lifelong friendships.</p>
+        </div>
+        
+        <div class="moments-grid">
+            <!-- Moment 1 Generated Pic -->
+            <div class="moment-card">
+                <div class="moment-img-container">
+                    <img src="user_cooking.jpg" alt="Cooking Together" class="moment-img">
+                </div>
+                <div class="moment-content">
+                    <div class="moment-tags">
+                        <span class="tag"><i class="ph ph-cooking-pot"></i> Culinary Exchange</span>
+                    </div>
+                    <h3 class="moment-title">A Taste of Tradition</h3>
+                    <p class="moment-text">"Learning how to make authentic Tunisian bread and cooking together was the highlight of my exchange. It felt just like home and we bonded instantly!"</p>
+                    <p class="moment-author">— Heyin (South Korea) & Her Host</p>
+                </div>
+            </div>
+
+            <!-- Moment 2 Generated Pic -->
+            <div class="moment-card alt-layout">
+                <div class="moment-content">
+                    <div class="moment-tags">
+                        <span class="tag"><i class="ph ph-map-pin"></i> Medina Adventures</span>
+                    </div>
+                    <h3 class="moment-title">Exploring the Souks</h3>
+                    <p class="moment-text">"Wandering through the historic Medina with my hosts made the city come alive! From picking out traditional ceramics to laughing over a cup of mint tea, these are the moments I'll cherish forever."</p>
+                    <p class="moment-author">— Naurah (Indonesia) hosted by Elaa & Rahma (Tunisia)</p>
+                </div>
+                <div class="moment-img-container">
+                    <img src="user_souk.jpg" alt="Walking in Medina" class="moment-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Matchmaker Section -->
+    <section id="matchmaker" class="section matchmaker-section" x-data="hostMatchmaker()">
+        <div class="section-header">
+            <h2 class="section-title">Find Your Perfect Host</h2>
+            <p class="section-desc">Match based on the experiences you want to share.</p>
+        </div>
+
+        <div class="interactive-filter-container">
+            <h3 class="filter-prompt">I am looking to bond over...</h3>
+            <div class="interest-tags">
+                <template x-for="interest in availableInterests" :key="interest.id">
+                    <button class="interest-btn" 
+                            :class="{ 'active': selectedInterests.includes(interest.id) }"
+                            @click="toggleInterest(interest.id)">
+                        <i :class="interest.icon"></i>
+                        <span x-text="interest.name"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <div class="host-grid">
+            <template x-for="host in filteredHosts" :key="host.id">
+                <div class="premium-host-card fade-in-up">
+                    <div class="card-hero">
+                        <img :src="host.coverImage" class="card-cover" alt="Home">
+                        <button class="heart-btn" @click="host.liked = !host.liked" :class="{'liked': host.liked}">
+                            <i :class="host.liked ? 'ph-fill ph-heart' : 'ph ph-heart'"></i>
+                        </button>
+                        <div class="host-badge">
+                            <span x-text="host.rating"></span> <i class="ph-fill ph-star"></i>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="avatar-container">
+                            <img :src="host.avatar" alt="Host avatar" class="host-avatar">
+                        </div>
+                        <div class="host-meta">
+                            <h3 class="host-name" x-text="host.name"></h3>
+                            <p class="host-location"><i class="ph ph-map-pin"></i> <span x-text="host.location"></span></p>
+                        </div>
+                        <p class="host-quote">"<span x-text="host.quote"></span>"</p>
+                        <div class="shared-interests">
+                            <template x-for="int in host.interests.slice(0,3)">
+                                <span class="small-tag" x-text="getInterestName(int)"></span>
+                            </template>
+                            <span class="small-tag more-tag" x-show="host.interests.length > 3">+<span x-text="host.interests.length - 3"></span></span>
+                        </div>
+                        <button class="btn-primary btn-block mt-auto">Connect & Request <i class="ph-bold ph-paper-plane-tilt"></i></button>
+                    </div>
+                </div>
+            </template>
+            
+            <div x-show="filteredHosts.length === 0" class="no-results">
+                <i class="ph-light ph-magnifying-glass"></i>
+                <h3>No hosts found for this specific combination</h3>
+                <p>Try removing some filters to see more amazing locals!</p>
+                <button class="btn-outline" @click="selectedInterests = []">Clear Filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advanced Form Section -->
+    <section id="become-host" class="section become-host-section" x-data="formWizard()">
+        <div class="form-container">
+            <div class="form-graphics">
+                <h2>Open Your Home & Heart</h2>
+                <p>Becoming a host is an enriching journey. Share your world with someone eager to learn about it.</p>
+                
+                <div class="progress-indicator">
+                    <div class="step" :class="{ 'completed': step > 1, 'active': step === 1 }"><span>1. The Basics</span></div>
+                    <div class="step" :class="{ 'completed': step > 2, 'active': step === 2 }"><span>2. The Experience</span></div>
+                    <div class="step" :class="{ 'completed': step > 3, 'active': step === 3 }"><span>3. About You</span></div>
+                </div>
+            </div>
+            
+            <div class="form-content-wrapper">
+                <form @submit.prevent="submitForm">
+                    <!-- Step 1 -->
+                    <div class="form-step" x-show="step === 1" x-transition:enter="slide-in" x-transition:leave="display-none">
+                        <h3>Let's start with the basics</h3>
+                        <div class="input-group">
+                            <label>Your Name</label>
+                            <input type="text" placeholder="e.g., Lilia B." required class="fancy-input">
+                        </div>
+                        <div class="input-group">
+                            <label>Where is your space located?</label>
+                            <input type="text" placeholder="e.g., La Marsa, Tunis..." required class="fancy-input">
+                        </div>
+                        <button type="button" class="btn-primary btn-block mt-4" @click="nextStep()">Continue <i class="ph-bold ph-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="form-step" style="display:none;" x-show="step === 2" x-transition:enter="slide-in" x-transition:leave="display-none">
+                        <h3>What makes staying with you special?</h3>
+                        <div class="input-group">
+                            <label>What cultural activity would you love to share?</label>
+                            <textarea placeholder="e.g., I'd love to show my guest the local souk and try making traditional tea together..." class="fancy-input" rows="3"></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label>Select main interests you want to bond over:</label>
+                            <div class="checkbox-grid">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox"> <span class="checkmark"></span> Food & Cooking
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox"> <span class="checkmark"></span> Language Exchange
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox"> <span class="checkmark"></span> Music & Art
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox"> <span class="checkmark"></span> City Tours
+                                </label>
+                            </div>
+                        </div>
+                        <div class="btn-row mt-4">
+                            <button type="button" class="btn-secondary" @click="prevStep()">Back</button>
+                            <button type="button" class="btn-primary flex-1" @click="nextStep()">Continue <i class="ph-bold ph-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="form-step" style="display:none;" x-show="step === 3" x-transition:enter="slide-in" x-transition:leave="display-none">
+                        <h3>A little more about your home</h3>
+                        <div class="input-group">
+                            <label>Share a photo of your space (Optional)</label>
+                            <div class="file-drop-zone">
+                                <i class="ph-light ph-image"></i>
+                                <p>Drag & drop or <span>Click to upload</span></p>
+                            </div>
+                        </div>
+                        <div class="btn-row mt-4">
+                            <button type="button" class="btn-secondary" @click="prevStep()">Back</button>
+                            <button type="submit" class="btn-primary flex-1">Complete Profile <i class="ph-bold ph-check"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="success-message" style="display:none;" x-show="step === 4" x-transition:enter="fade-in">
+                        <div class="icon-circle"><i class="ph-fill ph-check-circle"></i></div>
+                        <h3>Welcome to the Family!</h3>
+                        <p>Your heartfelt profile has been submitted. We'll be in touch soon.</p>
+                        <button type="button" class="btn-outline mt-4" @click="step = 1">List another space</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <img src="media logo 1.png" alt="Medina Host Logo" style="height: 60px; filter: brightness(0) invert(1);">
+            </div>
+            <p>Bridging cultures, one heartfelt exchange at a time. Made with ❤️ in Tunisia.</p>
+            <div class="social-links">
+                <a href="#"><i class="ph-fill ph-instagram-logo"></i></a>
+                <a href="#"><i class="ph-fill ph-twitter-logo"></i></a>
+                <a href="#"><i class="ph-fill ph-facebook-logo"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Medina Hosting Exchange Program.</p>
+        </div>
+    </footer>
+
+    <!-- Alpine Data Scripts -->
+    <script>
+        // Form Wizard Logic
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('formWizard', () => ({
+                step: 1,
+                nextStep() {
+                    if(this.step < 3) this.step++;
+                },
+                prevStep() {
+                    if(this.step > 1) this.step--;
+                },
+                submitForm() {
+                    this.step = 4; // Show success
+                }
+            }));
+
+            // Matchmaker Logic
+            Alpine.data('hostMatchmaker', () => ({
+                selectedInterests: [],
+                availableInterests: [
+                    { id: 'cooking', name: 'Cooking', icon: 'ph-fill ph-cooking-pot' },
+                    { id: 'language', name: 'Languages', icon: 'ph-fill ph-translate' },
+                    { id: 'art', name: 'Art & Culture', icon: 'ph-fill ph-palette' },
+                    { id: 'explore', name: 'Exploring', icon: 'ph-fill ph-compass' },
+                    { id: 'music', name: 'Music', icon: 'ph-fill ph-music-notes' }
+                ],
+                allHosts: [
+                    {
+                        id: 1,
+                        name: 'Amina Ben Ali',
+                        location: 'Sidi Bou Said',
+                        quote: 'I love trying international recipes and teaching you how to make perfect mint tea.',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amina',
+                        coverImage: 'user_cooking.jpg',
+                        rating: 4.9,
+                        interests: ['cooking', 'language', 'explore'],
+                        liked: false
+                    },
+                    {
+                        id: 2,
+                        name: 'Nizar Fekih',
+                        location: 'Medina / Tunis',
+                        quote: 'Let me show you the hidden art galleries of the Medina that tourists never see.',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nizar',
+                        coverImage: 'user_souk.jpg',
+                        rating: 5.0,
+                        interests: ['art', 'explore', 'music'],
+                        liked: false
+                    },
+                    {
+                        id: 3,
+                        name: 'Sarra & Mehdi',
+                        location: 'Carthage',
+                        quote: 'Our home is lively with music. Come practice Arabic and play guitar with us!',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarra',
+                        coverImage: 'user_cooking.jpg',
+                        rating: 4.8,
+                        interests: ['music', 'language', 'cooking'],
+                        liked: false
+                    },
+                    {
+                        id: 4,
+                        name: 'Elaa & Rahma',
+                        location: 'La Marsa',
+                        quote: 'Looking forward to more souk visits and beautiful cultural exchanges!',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rahma',
+                        coverImage: 'user_souk.jpg',
+                        rating: 4.9,
+                        interests: ['explore', 'art'],
+                        liked: false
+                    }
+                ],
+                toggleInterest(id) {
+                    if(this.selectedInterests.includes(id)) {
+                        this.selectedInterests = this.selectedInterests.filter(i => i !== id);
+                    } else {
+                        this.selectedInterests.push(id);
+                    }
+                },
+                get filteredHosts() {
+                    if (this.selectedInterests.length === 0) return this.allHosts;
+                    return this.allHosts.filter(host => {
+                        // Check if host has ALL selected interests
+                        return this.selectedInterests.every(interest => host.interests.includes(interest));
+                    });
+                },
+                getInterestName(id) {
+                    const found = this.availableInterests.find(i => i.id === id);
+                    return found ? found.name : id;
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
